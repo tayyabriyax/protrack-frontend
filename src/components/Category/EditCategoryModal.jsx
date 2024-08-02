@@ -3,8 +3,8 @@ import { CategoryContext } from '../../contexts/CategoryContext';
 
 const EditCategoryModal = ({ onClose, edit_category }) => {
     const [defaultName, setDefaultName] = useState(edit_category.name)
-    const [defaultId, setDefaultId] = useState(edit_category.id)
-    const { getCategoryList, setLoadData } = useContext(CategoryContext);
+    const defaultId = useState(edit_category.id)
+    const { setLoadData } = useContext(CategoryContext);
 
     const handleChange = (e) => {
         setDefaultName(() => e.target.value)
@@ -12,7 +12,6 @@ const EditCategoryModal = ({ onClose, edit_category }) => {
 
     const handleAddClick = async () => {
             const url = "http://localhost:3000/api/category/" + defaultId;
-            getCategoryList()
             const options = {
                 method: 'PUT',
                 headers: {

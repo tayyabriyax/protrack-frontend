@@ -1,38 +1,28 @@
 import React, { useState, useContext } from 'react'
-import { CompanyContext } from '../../contexts/CompanyContext';
+import { UnitsContext } from '../../contexts/UomContext'
 
-const CompanyEditModal = ({ onClose, edit_company }) => {
-    const [defaultName, setDefaultName] = useState(edit_company.name)
-    const [defaultAddress, setDefaultAddress] = useState(edit_company.address)
-    const [defaultPhone, setDefaultPhone] = useState(edit_company.phone)
-    const [defaultEmail, setDefaultEmail] = useState(edit_company.email)
-    const defaultId = edit_company.id
-    const { setLoadCompanyData } = useContext(CompanyContext);
+const EditModal = ({ onClose, edit_unit }) => {
+    const [defaultName, setDefaultName] = useState(edit_unit.name)
+    const [defaultSymbol, setDefaultSymbol] = useState(edit_unit.symbol)
+    const defaultId = edit_unit.id
+    const { setLoadUnitsData } = useContext(UnitsContext);
 
     const handleChangeName = (e) => {
         setDefaultName(() => e.target.value)
     }
 
-    const handleChangeAddress = (e) => {
-        setDefaultAddress(() => e.target.value)
-    }
-
-    const handleChangeEmail = (e) => {
-        setDefaultEmail(() => e.target.value)
-    }
-
-    const handleChangePhone = (e) => {
-        setDefaultPhone(() => e.target.value)
+    const handleChangeSymbol = (e) => {
+        setDefaultSymbol(() => e.target.value)
     }
 
     const handleAddClick = async () => {
-        const url = "http://localhost:3000/api/company/" + defaultId;
+        const url = "http://localhost:3000/api/uom/" + defaultId;
         const options = {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ name: defaultName, address: defaultAddress, phone: defaultPhone, email: defaultEmail })
+            body: JSON.stringify({uom_name: defaultName, uom_symbol: defaultSymbol})
         };
 
         fetch(url, options)
@@ -43,7 +33,7 @@ const CompanyEditModal = ({ onClose, edit_company }) => {
                 return response.json();
             })
             .then(data => {
-                setLoadCompanyData((prev) => !prev);
+                setLoadUnitsData((prev) => !prev);
                 onClose();
                 console.log('Success:', data);
             })
@@ -64,21 +54,9 @@ const CompanyEditModal = ({ onClose, edit_company }) => {
                     className='p-2 w-72 bg-purple-50 rounded-md outline-purple-600' />
                 <input
                     type="text"
-                    value={defaultAddress}
-                    onChange={handleChangeAddress}
+                    value={defaultSymbol}
+                    onChange={handleChangeSymbol}
                     placeholder='Address'
-                    className='p-2 w-72 bg-purple-50 rounded-md outline-purple-600' />
-                <input
-                    type="text"
-                    value={defaultPhone}
-                    onChange={handleChangePhone}
-                    placeholder='Phone'
-                    className='p-2 w-72 bg-purple-50 rounded-md outline-purple-600' />
-                <input
-                    type="text"
-                    value={defaultEmail}
-                    onChange={handleChangeEmail}
-                    placeholder='Email'
                     className='p-2 w-72 bg-purple-50 rounded-md outline-purple-600' />
                 <div className='flex gap-2 w-72 justify-end'>
                     <button className='hover:bg-red-300 hover:text-red-600 py-1 px-4 font-bold rounded-md 
@@ -97,4 +75,4 @@ const CompanyEditModal = ({ onClose, edit_company }) => {
     )
 }
 
-export default CompanyEditModal
+export default EditModal
