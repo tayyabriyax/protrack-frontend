@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import ProductTable from '../components/Products/ProductTable'
 import ProductModal from '../components/Products/ProductModal'
-import { NavLink, Outlet } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 
 const ProductTablePage = () => {
     const [showModal, setShowModal] = useState(false)

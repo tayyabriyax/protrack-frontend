@@ -20,12 +20,12 @@ const ProductTable = ({to}) => {
                                         <th
                                             className="w-1/6 min-w-[160px] py-4 px-3 text-lg font-bold lg:py-7 lg:px-4"
                                         >
-                                            Product Name
+                                            Name
                                         </th>
                                         <th
                                             className="w-1/6 min-w-[160px] py-4 px-3 text-lg font-bold lg:py-7 lg:px-4"
                                         >
-                                            Category
+                                            Category ID
                                         </th>
                                         <th
                                             className="w-1/6 min-w-[160px] py-4 px-3 text-lg font-bold lg:py-7 lg:px-4"
@@ -35,12 +35,12 @@ const ProductTable = ({to}) => {
                                         <th
                                             className="w-1/6 min-w-[160px] py-4 px-3 text-lg font-bold lg:py-7 lg:px-4"
                                         >
-                                            Company
+                                            Company ID
                                         </th>
                                         <th
                                             className="w-1/6 min-w-[160px] py-4 px-3 text-lg font-bold lg:py-7 lg:px-4"
                                         >
-                                            Status
+                                            Location
                                         </th>
                                         <th
                                             className="w-1/6 min-w-[160px] py-4 px-3 text-lg font-bold lg:py-7 lg:px-4"

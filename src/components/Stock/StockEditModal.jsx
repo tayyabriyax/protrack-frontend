@@ -2,26 +2,44 @@ import React, { useState, useContext } from 'react'
 import { StockContext } from '../../contexts/StockContext';
 // import Dropdown from '../DropDown/Dropdown'
 
-const StockModal = ({ onClose }) => {
-    const [stock, setStock] = useState({ product_id: "", purchase_price: "", sale_price: "", quantity: "", batch_no: "" });
-    const { getStockList, setLoadStockData } = useContext(StockContext);
+const StockEditModal = ({ onClose, edit_stock }) => {
+    const [defaultStockId, setDefaultStockId] = useState(edit_stock.product_id)
+    const [defaultPurPrice, setDefaultPurPrice] = useState(edit_stock.purchase_price)
+    const [defaultSalePrice, setDefaultSalePrice] = useState(edit_stock.sale_price)
+    const [defaultQuantity, setDefaultQuantity] = useState(edit_stock.quantity)
+    const [defaultBatchNo, setDefaultBatchNo] = useState(edit_stock.batch_no)
+    const defaultId = edit_stock.id
+    const { setLoadStockData } = useContext(StockContext);
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setStock({
-            ...stock,
-            [name]: value
-        });
-    };
+    const handleChangeStockId = (e) => {
+        setDefaultStockId(() => e.target.value)
+    }
 
-    const handleAddClick = () => {
-        const url = "http://localhost:3000/api/stock";
+    const handleChangePurPrice = (e) => {
+        setDefaultPurPrice(() => e.target.value)
+    }
+
+    const handleChangeSalePrice = (e) => {
+        setDefaultSalePrice(() => e.target.value)
+    }
+
+    const handleChangeQuantity = (e) => {
+        setDefaultQuantity(() => e.target.value)
+    }
+
+    const handleChangeBatchNo = (e) => {
+        setDefaultBatchNo(() => e.target.value)
+    }
+
+    const handleAddClick = async () => {
+        const url = "http://localhost:3000/api/stock/" + defaultId;
         const options = {
-            method: 'POST',
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(stock)
+            body: JSON.stringify({ product_id: defaultStockId, purchase_price: defaultPurPrice, sale_price: defaultSalePrice,
+                quantity: defaultQuantity, batch_no: defaultBatchNo})
         };
 
         fetch(url, options)
@@ -39,7 +57,7 @@ const StockModal = ({ onClose }) => {
             .catch((error) => {
                 console.log('Error:', error);
             });
-    };
+    }
     return (
         <div className='fixed top-0 left-0 bg-opacity-30 backdrop-blur-sm w-full h-full flex justify-center items-center text-purple-600'>
             <div className='p-8 flex flex-col gap-8 bg-purple-100 items-center rounded-md w-fit border-2 border-purple-600'>
@@ -47,37 +65,37 @@ const StockModal = ({ onClose }) => {
                     {/* <Dropdown label={"Product ID"} /> */}
                     <input
                         type="text"
-                        value={stock.product_id}
+                        value={defaultStockId}
                         name='product_id'
-                        onChange={handleChange}
+                        onChange={handleChangeStockId}
                         placeholder='Product ID'
-                        className='p-2 text-gray-400 w-72 bg-purple-50 rounded-md outline-purple-600' />
+                        className='p-2 w-72 bg-purple-50 rounded-md outline-purple-600' />
                     <input
                         type="text"
-                        value={stock.purchase_price}
+                        value={defaultPurPrice}
                         name='purchase_price'
-                        onChange={handleChange}
+                        onChange={handleChangePurPrice}
                         placeholder='Purchase Price'
                         className='p-2 w-72 bg-purple-50 rounded-md outline-purple-600' />
                     <input
                         type="text"
-                        value={stock.sale_price}
+                        value={defaultSalePrice}
                         name='sale_price'
-                        onChange={handleChange}
+                        onChange={handleChangeSalePrice}
                         placeholder='Sale Price'
                         className='p-2 w-72 bg-purple-50 rounded-md outline-purple-600' />
                     <input
                         type="number"
-                        value={stock.quantity}
+                        value={defaultQuantity}
                         name='quantity'
-                        onChange={handleChange}
+                        onChange={handleChangeQuantity}
                         placeholder='Quantity'
                         className='p-2 w-72 bg-purple-50 rounded-md outline-purple-600' />
                     <input
                         type="text"
-                        value={stock.batch_no}
+                        value={defaultBatchNo}
                         name='batch_no'
-                        onChange={handleChange}
+                        onChange={handleChangeBatchNo}
                         placeholder='Batch Number'
                         className='p-2 w-72 bg-purple-50 rounded-md outline-purple-600' />
                     {/* <Dropdown label={"Supplier"} /> */}
@@ -89,7 +107,7 @@ const StockModal = ({ onClose }) => {
                     </button>
                     <button className='hover:bg-purple-300 hover:text-purple-600 py-1 px-4 font-bold rounded-md 
                 border-purple-500 border-2' onClick={handleAddClick}>
-                        Add
+                        Update
                     </button>
                 </div>
             </div>
@@ -97,4 +115,4 @@ const StockModal = ({ onClose }) => {
     )
 }
 
-export default StockModal
+export default StockEditModal
