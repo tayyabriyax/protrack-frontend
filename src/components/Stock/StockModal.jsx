@@ -1,10 +1,12 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { StockContext } from '../../contexts/StockContext';
+import { ProductContext } from '../../contexts/ProductContext';
 // import Dropdown from '../DropDown/Dropdown'
 
 const StockModal = ({ onClose }) => {
     const [stock, setStock] = useState({ product_id: "", purchase_price: "", sale_price: "", quantity: "", batch_no: "" });
-    const { getStockList, setLoadStockData } = useContext(StockContext);
+    const { setLoadStockData } = useContext(StockContext);
+    const { products, getProductList, loadProductData, setLoadProductData } = useContext(ProductContext)
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -13,6 +15,14 @@ const StockModal = ({ onClose }) => {
             [name]: value
         });
     };
+
+    useEffect(() => {
+        getProductList()
+    }, [loadProductData])
+
+    const handleSelectClick = () => {
+        setLoadProductData((prev) => !prev);
+    }
 
     const handleAddClick = () => {
         const url = "http://localhost:3000/api/stock";
@@ -44,14 +54,19 @@ const StockModal = ({ onClose }) => {
         <div className='fixed top-0 left-0 bg-opacity-30 backdrop-blur-sm w-full h-full flex justify-center items-center text-purple-600'>
             <div className='p-8 flex flex-col gap-8 bg-purple-100 items-center rounded-md w-fit border-2 border-purple-600'>
                 <div className=' grid grid-cols-2 gap-8'>
-                    {/* <Dropdown label={"Product ID"} /> */}
-                    <input
-                        type="text"
-                        value={stock.product_id}
-                        name='product_id'
-                        onChange={handleChange}
-                        placeholder='Product ID'
-                        className='p-2 text-gray-400 w-72 bg-purple-50 rounded-md outline-purple-600' />
+                    <div onClick={handleSelectClick} >
+                        <select value={stock.product_id} onChange={handleChange} name='product_id'
+                        className='p-2 w-72 bg-purple-50 rounded-md outline-purple-600 text-gray-400'>
+                            <option value="">Product</option>
+                            {
+                                products.map((product, index) => {
+                                    return (
+                                        <option value={product.id} key={index}>{product.name}</option>
+                                    )
+                                })
+                            }
+                        </select>
+                    </div>
                     <input
                         type="text"
                         value={stock.purchase_price}
