@@ -25,13 +25,13 @@ const AutoSuggest = ({ suggestions }) => {
       <input
         type="text"
         id="first_name"
-        className="p-2 border  border-purple-600 w-56 bg-purple-50 rounded-md outline-purple-600"
-        placeholder="John"
+        className="p-2 border  border-purple-600 w-96 bg-purple-50 rounded-md outline-purple-600"
+        placeholder="Product"
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         onKeyDown={handleKeyDown}
         required />
-      <div className='bg-gray-50 rounded-md text-gray-400 flex absolute w-56
+      <div className='bg-gray-50 rounded-md text-gray-400 flex absolute w-72
             flex-col'>
         {
           suggestions.filter((items) => {

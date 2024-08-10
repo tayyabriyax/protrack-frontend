@@ -106,7 +106,7 @@ const StockTable = () => {
                           <td
                             className="py-3 px-2 text-center text-base font-medium"
                           >
-                            {items.product_id}
+                            {items.product?.name}
                           </td>
                           <td
                             className="py-3 px-2 text-center text-base font-medium"

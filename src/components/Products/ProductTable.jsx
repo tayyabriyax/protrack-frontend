@@ -112,17 +112,17 @@ const ProductTable = () => {
                                                     <td
                                                         className="py-3 px-2 text-center text-base font-medium"
                                                     >
-                                                        {items.category_id}
+                                                        {items.category?.name}
                                                     </td>
                                                     <td
                                                         className="py-3 px-2 text-center text-base font-medium"
                                                     >
-                                                        {items.supplier_id}
+                                                        {items.supplier?.name}
                                                     </td>
                                                     <td
                                                         className="py-3 px-2 text-center text-base font-medium"
                                                     >
-                                                        {items.company_id}
+                                                        {items.company?.name}
                                                     </td>
                                                     <td
                                                         className="py-3 px-2 text-center text-base font-medium"

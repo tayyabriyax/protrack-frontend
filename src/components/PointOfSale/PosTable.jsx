@@ -1,9 +1,6 @@
 import React from 'react'
-import PosTableRow from './PosTableRow';
-import { useRow } from '../../contexts/RowContext';
 
-const PosTable = () => {
-    const { row } = useRow()
+const PosTable = ({ product }) => {
     return (
         <section className="py-2 w-full">
             <div className="container mx-auto">
@@ -13,6 +10,11 @@ const PosTable = () => {
                             <table className="w-full bg-purple-100 table-auto rounded-md">
                                 <thead>
                                     <tr className="text-center bg-purple-300 rounded-md">
+                                        <th
+                                            className="w-1/6 min-w-[160px] py-4 px-3 text-lg font-bold lg:py-7 lg:px-4"
+                                        >
+                                            #
+                                        </th>
                                         <th
                                             className="w-1/6 min-w-[160px] py-4 px-3 text-lg font-bold lg:py-7 lg:px-4"
                                         >
@@ -26,11 +28,6 @@ const PosTable = () => {
                                         <th
                                             className="w-1/6 min-w-[160px] py-4 px-3 text-lg font-bold lg:py-7 lg:px-4"
                                         >
-                                            Total Quantity
-                                        </th>
-                                        <th
-                                            className="w-1/6 min-w-[160px] py-4 px-3 text-lg font-bold lg:py-7 lg:px-4"
-                                        >
                                             Price
                                         </th>
                                         <th
@@ -38,17 +35,38 @@ const PosTable = () => {
                                         >
                                             Total
                                         </th>
-                                        <th
-                                            className="w-1/6 min-w-[160px] py-4 px-3 text-lg font-bold lg:py-7 lg:px-4"
-                                        >
-                                            Action
-                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {row.map(() => {
-                                        return (
-                                            <PosTableRow key={Math.random()} />
+                                    {product.map((item, index) => {
+                                        return(
+                                            <tr className='border-b border-purple-300' key={index}>
+                                        <td
+                                            className="py-5 border-s px-2 text-center text-base font-medium"
+                                        >
+                                            { index + 1 }
+                                        </td>
+                                        <td
+                                            className="py-5 px-2 text-center text-base font-medium"
+                                        >
+                                            { item.product_name }
+                                        </td>
+                                        <td
+                                            className="py-5 px-2 text-center text-base font-medium"
+                                        >
+                                            { item.product_qty }
+                                        </td>
+                                        <td
+                                            className="py-5 px-2 text-center text-base font-medium"
+                                        >
+                                            { item.product_price }
+                                        </td>
+                                        <td
+                                            className="py-5 px-2 text-center text-base font-medium"
+                                        >
+                                            { item.total }
+                                        </td>
+                                    </tr>
                                         )
                                     })}
                                 </tbody>

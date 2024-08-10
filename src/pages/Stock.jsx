@@ -2,12 +2,10 @@ import React, { useState } from 'react'
 import StockTable from '../components/Stock/StockTable'
 import StockModal from '../components/Stock/StockModal'
 import StockProvider from '../contexts/StockContext'
-import ProductProvider from '../contexts/ProductContext'
 
 const RunningTasks = () => {
   const [showModal, setShowModal] = useState(false)
   return (
-    <ProductProvider>
       <StockProvider>
         <div className='w-full bg-purple-50 p-4 rounded-md flex flex-col gap-10 text-purple-600'>
           <div className='flex justify-end items-center'>
@@ -22,7 +20,6 @@ const RunningTasks = () => {
           </div>
         </div>
       </StockProvider>
-    </ProductProvider>
   )
 }
 

@@ -1,7 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { StockContext } from '../../contexts/StockContext';
 import { ProductContext } from '../../contexts/ProductContext';
-// import Dropdown from '../DropDown/Dropdown'
 
 const StockModal = ({ onClose }) => {
     const [stock, setStock] = useState({ product_id: "", purchase_price: "", sale_price: "", quantity: "", batch_no: "" });
