@@ -6,7 +6,7 @@ import UnitsProvider from '../../contexts/UomContext'
 const UnitOfMeasurement = () => {
     const [showModal, setShowModal] = useState(false)
     return (
-        <UnitsProvider className='w-full bg-purple-100 p-4 rounded-md flex flex-col gap-10'>
+        <div className='w-full bg-purple-100 p-4 rounded-md flex flex-col gap-10'>
             <div className='flex justify-between items-center'>
                 <span className='font-bold text-xl'>Unit of Measurement</span>
                 <button className='hover:bg-purple-300 hover:text-purple-600 p-2 font-bold w-40 rounded-md 
@@ -18,7 +18,7 @@ const UnitOfMeasurement = () => {
                 <UnitTable />
                 {showModal && <AddModal onClose={() => setShowModal(false)} />}
             </div>
-        </UnitsProvider>
+        </div>
     )
 }
 

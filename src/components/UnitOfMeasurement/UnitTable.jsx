@@ -1,52 +1,23 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { Trash2Icon, EditIcon } from 'lucide-react'
-import { UnitsContext } from '../../contexts/UomContext';
-import EditModal from './EditModal';
-
+import { useSelector, useDispatch } from 'react-redux'
+import { getUnitOfMeasurementAsync, deleteUnitOfMeasurementAsync } from '../../features/UnitOfMeasurementSlice'
+import EditModal from './EditModal'
 
 const UnitTable = () => {
     const [showModal, setShowModal] = useState(false)
-    const { units, getUnitsList, loadUnitsData, setLoadUnitsData } = useContext(UnitsContext);
-    const [editId, setEditId] = useState(null)
+    const [editUnit, setEditUnit] = useState(null)
+    const units = useSelector(state => state.UnitOfMeasurement.UnitOfMeasurement);
+    const loadData = useSelector(state => state.UnitOfMeasurement.loadData)
+    const dispatch = useDispatch()
 
     useEffect(() => {
-        getUnitsList()
-    }, [loadUnitsData])
+        dispatch(getUnitOfMeasurementAsync())
+    }, [loadData])
 
-    const deleteUnits = async (id) => {
-        const url = "http://localhost:3000/api/uom/" + id;
-        const options = {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        };
-
-        fetch(url, options)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok ' + response.statusText);
-                }
-                return response.json();
-            })
-            .then(data => {
-                setLoadUnitsData((prev) => !prev);
-                console.log('Success:', data);
-            })
-            .catch((error) => {
-                console.log('Error:', error);
-            });
-    }
-
-    const editableValue = (id) => {
-        let editUnits = units.filter(company => company.id === id);
-        return editUnits[0]
-    }
-
-    const editUnits = async (id) => {
-        setEditId(id)
+    const handleeditUnit = (unit) => {
         setShowModal(true)
-
+        setEditUnit(unit)
     }
 
     return (
@@ -88,29 +59,29 @@ const UnitTable = () => {
                                                     <td
                                                         className="py-3 px-2 border-s text-center text-base font-medium"
                                                     >
-                                                        {index + 1}
+                                                        { index + 1 }
                                                     </td>
                                                     <td
                                                         className="py-3 px-2 text-center text-base font-medium"
                                                     >
-                                                        {unit.name}
+                                                        { unit.name }
                                                     </td>
                                                     <td
                                                         className="py-3 px-2 text-center text-base font-medium"
                                                     >
-                                                        {unit.symbol}
+                                                        { unit.symbol }
                                                     </td>
                                                     <td
                                                         className="border-r py-3 px-2 text-center text-base font-medium flex justify-center gap-2"
                                                     >
                                                         <button
-                                                            onClick={() => deleteUnits(unit.id)}
+                                                            onClick={() => dispatch(deleteUnitOfMeasurementAsync(unit.id))}
                                                             className="inline-block py-2.5 px-4 rounded-md hover:bg-red-300 text-red-600 font-medium"
                                                         >
                                                             <Trash2Icon />
                                                         </button>
                                                         <button
-                                                            onClick={() => editUnits(unit.id)}
+                                                            onClick={() => handleeditUnit(unit)}
                                                             className="inline-block py-2.5 px-4 rounded-md hover:bg-purple-300 font-medium"
                                                         >
                                                             <EditIcon />
@@ -126,9 +97,9 @@ const UnitTable = () => {
                     </div>
                 </div>
             </div>
-            {showModal && <EditModal onClose={() => setShowModal(false)} edit_unit={editableValue(editId)} />}
+            {showModal && <EditModal onClose={() => setShowModal(false)} edit_unit={editUnit} />}
         </section>
     )
 }
 
-export default UnitTable
+export default UnitTable 
