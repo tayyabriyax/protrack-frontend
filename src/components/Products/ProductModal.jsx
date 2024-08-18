@@ -1,17 +1,22 @@
-import React, { useState, useContext } from 'react'
-// import Dropdown from '../DropDown/Dropdown'
-import { ProductContext } from '../../contexts/ProductContext';
-import { CategoryContext } from '../../contexts/CategoryContext';
-import { useEffect } from 'react';
-import { SupplierContext } from '../../contexts/SupplierContext';
-import { CompanyContext } from '../../contexts/CompanyContext';
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { addProductAsync } from '../../features/ProductSlice'
+import { getCategoryAsync } from '../../features/CategorySlice'
+import { getSupplierAsync } from '../../features/SupplierSlice'
+import { getCompanyAsync } from '../../features/CompanySlice'
 
 const ProductModal = ({ onClose }) => {
-    const [product, setProduct] = useState({ name: "", category_id: "", supplier_id: "", location: "", company_id: "" });
-    const { setLoadProductData } = useContext(ProductContext);
-    const { categories, getCategoryList, loadData, setLoadData } = useContext(CategoryContext)
-    const { supplier, getSupplierList } = useContext(SupplierContext)
-    const { company, getCompanyList } = useContext(CompanyContext)
+    const [product, setProduct] = useState({ name: "", category_id: "", supplier_id: "", company_id: "", location: "" })
+    const categories = useSelector(state => state.Category.Category)
+    const supplier = useSelector(state => state.Supplier.Supplier)
+    const company = useSelector(state => state.Company.Company)
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        dispatch(getCategoryAsync())
+        dispatch(getSupplierAsync())
+        dispatch(getCompanyAsync())
+    }, [])
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -19,44 +24,13 @@ const ProductModal = ({ onClose }) => {
             ...product,
             [name]: value
         });
-    };
-
-    useEffect(() => {
-        getCategoryList()
-        getSupplierList()
-        getCompanyList()
-    }, [loadData])
-
-    const handleSelectClick = () => {
-        setLoadData((prev) => !prev);
     }
 
     const handleAddClick = () => {
-        const url = "http://localhost:3000/api/product";
-        const options = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(product)
-        };
+        dispatch(addProductAsync(product));
+        onClose()
+    }
 
-        fetch(url, options)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok ' + response.statusText);
-                }
-                return response.json();
-            })
-            .then(data => {
-                setLoadProductData((prev) => !prev);
-                onClose();
-                console.log('Success:', data);
-            })
-            .catch((error) => {
-                console.log('Error:', error);
-            });
-    };
     return (
         <div className='fixed top-0 left-0 bg-opacity-30 backdrop-blur-sm w-full h-full flex justify-center items-center'>
             <div className='p-8 flex flex-col gap-8 bg-purple-100 items-center rounded-md w-fit border-2 border-purple-600'>
@@ -68,7 +42,7 @@ const ProductModal = ({ onClose }) => {
                         onChange={handleChange}
                         placeholder='Name'
                         className='p-2 w-72 bg-purple-50 rounded-md outline-purple-600' />
-                    <div onClick={handleSelectClick} >
+                    <div >
                         <select id="" value={product.category_id} onChange={handleChange} name='category_id'
                             className='p-2 w-72 bg-purple-50 rounded-md outline-purple-600 text-gray-400'>
                             <option value="">Category</option>

@@ -1,53 +1,26 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Trash2Icon, EditIcon, NotepadTextIcon } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
-import { ProductContext } from '../../contexts/ProductContext'
 import ProductEditModal from './ProductEditModal'
+import { useDispatch, useSelector } from 'react-redux'
+import { deleteProductAsync, getProductAsync } from '../../features/ProductSlice'
 
 const ProductTable = () => {
     const [showModal, setShowModal] = useState(false)
-    const { getProductList, loadProductData, products, setLoadProductData } = useContext(ProductContext);
-    const [editId, setEditId] = useState(null)
+    const [editProduct, setEditProduct] = useState(null)
+    const products = useSelector(state => state.Product.Product);
+    const loadData = useSelector(state => state.Product.loadData)
+    const dispatch = useDispatch()
 
     useEffect(() => {
-        getProductList()
-    }, [loadProductData])
+        dispatch(getProductAsync())
+    }, [loadData])
 
-    const deleteProduct = async (id) => {
-        const url = "http://localhost:3000/api/product/" + id;
-        const options = {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        };
-
-        fetch(url, options)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok ' + response.statusText);
-                }
-                return response.json();
-            })
-            .then(data => {
-                setLoadProductData((prev) => !prev);
-                console.log('Success:', data);
-            })
-            .catch((error) => {
-                console.log('Error:', error);
-            });
-    }
-
-    const editableValue = (id) => {
-        let editProduct = products.filter(company => company.id === id);
-        return editProduct[0]
-    }
-
-    const editProduct = async (id) => {
-        setEditId(id)
+    const handleeditProduct = (product) => {
         setShowModal(true)
-
+        setEditProduct(product)
     }
+
     return (
         <section className="py-2 w-full ">
             <div className="container mx-auto">
@@ -70,17 +43,17 @@ const ProductTable = () => {
                                         <th
                                             className="w-1/6 min-w-[160px] py-4 px-3 text-lg font-bold lg:py-7 lg:px-4"
                                         >
-                                            Category ID
+                                            Category
                                         </th>
                                         <th
                                             className="w-1/6 min-w-[160px] py-4 px-3 text-lg font-bold lg:py-7 lg:px-4"
                                         >
-                                            Supplier ID
+                                            Supplier
                                         </th>
                                         <th
                                             className="w-1/6 min-w-[160px] py-4 px-3 text-lg font-bold lg:py-7 lg:px-4"
                                         >
-                                            Company ID
+                                            Company
                                         </th>
                                         <th
                                             className="w-1/6 min-w-[160px] py-4 px-3 text-lg font-bold lg:py-7 lg:px-4"
@@ -133,7 +106,7 @@ const ProductTable = () => {
                                                         className="border-r py-3 px-2 text-center text-base font-medium flex justify-center gap-2"
                                                     >
                                                         <button
-                                                            onClick={() => deleteProduct(items.id)}
+                                                            onClick={() => dispatch(deleteProductAsync(items.id))}
                                                             className="inline-block py-2.5 px-4 rounded-md hover:bg-red-300 text-red-600 font-medium"
                                                         >
                                                             <Trash2Icon />
@@ -145,7 +118,7 @@ const ProductTable = () => {
                                                             <NotepadTextIcon />
                                                         </NavLink>
                                                         <button
-                                                            onClick={() => editProduct(items.id)}
+                                                            onClick={() => handleeditProduct(items)}
                                                             className="inline-block py-2.5 px-4 rounded-md hover:bg-purple-300 font-medium"
                                                         >
                                                             <EditIcon />
@@ -161,7 +134,7 @@ const ProductTable = () => {
                     </div>
                 </div>
             </div>
-            {showModal && <ProductEditModal onClose={() => setShowModal(false)} edit_product={editableValue(editId)} />}
+            {showModal && <ProductEditModal onClose={() => setShowModal(false)} edit_product={editProduct} />}
         </section>
     )
 }

@@ -1,52 +1,24 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Trash2Icon, EditIcon } from 'lucide-react'
-import { CompanyContext } from '../../contexts/CompanyContext';
 import CompanyEditModal from './CompanyEditModal';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteCompanyAsync, getCompanyAsync } from '../../features/CompanySlice';
 
 const CompanyTable = () => {
     const [showModal, setShowModal] = useState(false)
-    const { getCompanyList, loadCompanyData, company, setLoadCompanyData } = useContext(CompanyContext);
-    const [editId, setEditId] = useState(null)
+    const [editCompany, setEditCompany] = useState(null)
+    const companies = useSelector(state => state.Company.Company);
+    const loadData = useSelector(state => state.Company.loadData);
+    const dispatch = useDispatch()
 
     useEffect(() => {
-        getCompanyList()
-    }, [loadCompanyData])
+        dispatch(getCompanyAsync())
+    }, [loadData])
 
-    const deleteCompany = async (id) => {
-        const url = "http://localhost:3000/api/company/"+id;
-        const options = {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-    };
-
-        fetch(url, options)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok ' + response.statusText);
-                }
-                return response.json();
-            })
-            .then(data => {
-                setLoadCompanyData((prev) =>! prev);
-                console.log('Success:', data);
-            })
-            .catch((error) => {
-                console.log('Error:', error);
-            });
+    const handleeditCompany = (company) => {
+        setShowModal(true)
+        setEditCompany(company)
     }
-
-    const editableValue = ( id ) => {
-        let editCompany = company.filter(company => company.id === id);
-         return editCompany[0]
-     }
- 
-     const editCompany = async (id) => {
-         setEditId(id)
-         setShowModal(true)
-        
-     }
 
     return (
         <section className="py-2 w-full">
@@ -91,7 +63,7 @@ const CompanyTable = () => {
                                 </thead>
                                 <tbody>
                                     {
-                                        company.map(( items, index) => {
+                                        companies.map((items, index) => {
                                             return (
                                                 <tr className='border-b border-purple-300' key={index}>
                                                     <td
@@ -123,13 +95,13 @@ const CompanyTable = () => {
                                                         className="border-r py-3 px-2 text-center text-base font-medium flex justify-center gap-2"
                                                     >
                                                         <button
-                                                            onClick={() => deleteCompany(items.id)}
+                                                            onClick={() => dispatch(deleteCompanyAsync(items.id))}
                                                             className="inline-block py-2.5 px-4 rounded-md hover:bg-red-300 text-red-600 font-medium"
                                                         >
                                                             <Trash2Icon />
                                                         </button>
                                                         <button
-                                                            onClick={() => editCompany(items.id)}
+                                                            onClick={() => handleeditCompany(items)}
                                                             className="inline-block py-2.5 px-4 rounded-md hover:bg-purple-300 font-medium"
                                                         >
                                                             <EditIcon />
@@ -145,7 +117,7 @@ const CompanyTable = () => {
                     </div>
                 </div>
             </div>
-            {showModal && <CompanyEditModal onClose={() => setShowModal(false)} edit_company={editableValue(editId)} />}
+            {showModal && <CompanyEditModal onClose={() => setShowModal(false)} edit_company={(editCompany)} />}
         </section>
     )
 }

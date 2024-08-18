@@ -1,17 +1,29 @@
-import React, { useState, useContext } from 'react'
-import { ProductContext } from '../../contexts/ProductContext';
+import React, { useState, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { editProductAsync } from '../../features/ProductSlice'
+import { getCategoryAsync } from '../../features/CategorySlice'
+import { getSupplierAsync } from '../../features/SupplierSlice'
+import { getCompanyAsync } from '../../features/CompanySlice'
 
 const ProductEditModal = ({ onClose, edit_product }) => {
-    const [defaultName, setDefaultName] = useState(edit_product.name)
+    const [productName, setProductName] = useState(edit_product.name)
     const [defaultCategoryId, setDefaultCategoryId] = useState(edit_product.category_id)
     const [defaultSupplierId, setDefaultSupplierId] = useState(edit_product.supplier_id)
     const [defaultCompanyId, setDefaultCompanyId] = useState(edit_product.company_id)
     const [defaultLocation, setDefaultLocation] = useState(edit_product.location)
-    const defaultId = edit_product.id
-    const { setLoadProductData } = useContext(ProductContext);
+    const categories = useSelector(state => state.Category.Category)
+    const supplier = useSelector(state => state.Supplier.Supplier)
+    const company = useSelector(state => state.Company.Company)
+    const productId = edit_product.id
+
+    useEffect(() => {
+        dispatch(getCategoryAsync())
+        dispatch(getSupplierAsync())
+        dispatch(getCompanyAsync())
+    }, [])
 
     const handleChangeName = (e) => {
-        setDefaultName(() => e.target.value)
+        setProductName(() => e.target.value)
     }
 
     const handleChangeCategoryId = (e) => {
@@ -30,63 +42,66 @@ const ProductEditModal = ({ onClose, edit_product }) => {
         setDefaultLocation(() => e.target.value)
     }
 
-    const handleAddClick = async () => {
-        const url = "http://localhost:3000/api/product/" + defaultId;
-        const options = {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ name: defaultName, category_id: defaultCategoryId, supplier_id: defaultSupplierId, 
-                company_id: defaultCompanyId, location: defaultLocation })
-        };
+    const dispatch = useDispatch();
 
-        fetch(url, options)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok ' + response.statusText);
-                }
-                return response.json();
-            })
-            .then(data => {
-                setLoadProductData((prev) => !prev);
-                onClose();
-                console.log('Success:', data);
-            })
-            .catch((error) => {
-                console.log('Error:', error);
-            });
+    const handleUpdateClick = () => {
+        let obj = {
+            id: productId, name: productName, category_id: defaultCategoryId, supplier_id: defaultSupplierId,
+            company_id: defaultCompanyId, location: defaultLocation
+        }
+        dispatch(editProductAsync(obj))
+        onClose()
     }
-
 
     return (
         <div className='fixed top-0 left-0 bg-opacity-30 backdrop-blur-sm w-full h-full flex justify-center items-center'>
             <div className='py-8 flex flex-col px-8 bg-purple-100 items-center gap-8 rounded-md w-fit border-2 border-purple-600'>
                 <input
                     type="text"
-                    value={defaultName}
+                    value={productName}
                     onChange={handleChangeName}
                     placeholder='Name'
                     className='p-2 w-72 bg-purple-50 rounded-md outline-purple-600' />
+                <div >
+                    <select id="" value={defaultCategoryId} onChange={handleChangeCategoryId} name='category_id'
+                        className='p-2 w-72 bg-purple-50 rounded-md outline-purple-600 text-gray-400'>
+                        <option value="">Category</option>
+                        {
+                            categories.map((category, index) => {
+                                return (
+                                    <option key={index} value={category.id}>{category.name}</option>
+                                )
+                            })
+                        }
+                    </select>
+                </div>
+                <div >
+                    <select id="" value={defaultSupplierId} onChange={handleChangeSupplierId} name='supplier_id'
+                        className='p-2 w-72 bg-purple-50 rounded-md outline-purple-600 text-gray-400'>
+                        <option value="">Supplier</option>
+                        {
+                            supplier.map((supplier, index) => {
+                                return (
+                                    <option key={index} value={supplier.id}>{supplier.name}</option>
+                                )
+                            })
+                        }
+                    </select>
+                </div>
+                <div >
+                    <select id="" value={defaultCompanyId} onChange={handleChangeCompanyId} name='company_id'
+                        className='p-2 w-72 bg-purple-50 rounded-md outline-purple-600 text-gray-400'>
+                        <option value="">Company</option>
+                        {
+                            company.map((company, index) => {
+                                return (
+                                    <option key={index} value={company.id}>{company.name}</option>
+                                )
+                            })
+                        }
+                    </select>
+                </div>
                 <input
-                    type="text"
-                    value={defaultCategoryId}
-                    onChange={handleChangeCategoryId}
-                    placeholder='Address'
-                    className='p-2 w-72 bg-purple-50 rounded-md outline-purple-600' />
-                <input
-                    type="text"
-                    value={defaultSupplierId}
-                    onChange={handleChangeSupplierId}
-                    placeholder='Phone'
-                    className='p-2 w-72 bg-purple-50 rounded-md outline-purple-600' />
-                <input
-                    type="text"
-                    value={defaultCompanyId}
-                    onChange={handleChangeCompanyId}
-                    placeholder='Email'
-                    className='p-2 w-72 bg-purple-50 rounded-md outline-purple-600' />
-                    <input
                     type="text"
                     value={defaultLocation}
                     onChange={handleChangeLocation}
@@ -100,7 +115,7 @@ const ProductEditModal = ({ onClose, edit_product }) => {
                     <button
                         className='hover:bg-purple-300 hover:text-purple-600 py-1 px-4 font-bold rounded-md 
                         border-purple-500 border-2'
-                        onClick={handleAddClick} >
+                        onClick={handleUpdateClick} >
                         Update
                     </button>
                 </div>

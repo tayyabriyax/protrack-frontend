@@ -55,6 +55,7 @@ const UnitOfMeasurementSlice = createSlice({
         builder.addCase(deleteUnitOfMeasurementAsync.fulfilled, (state) => {
             state.loadData = !state.loadData
         })
+        
         builder.addCase(editUnitOfMeasurementAsync.fulfilled, (state) => {
             state.loadData = !state.loadData
         })

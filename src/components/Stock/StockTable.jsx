@@ -1,52 +1,25 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Trash2Icon, EditIcon } from 'lucide-react'
-import { StockContext } from '../../contexts/StockContext';
 import StockEditModal from './StockEditModal';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteStockAsync, editStockAsync, getStockAsync } from '../../features/StockSlice';
 
 const StockTable = () => {
   const [showModal, setShowModal] = useState(false)
-  const { getStockList, loadStockData, stock, setLoadStockData } = useContext(StockContext);
-  const [editId, setEditId] = useState(null)
+  const [editStock, setEditStock] = useState(null)
+  const stocks = useSelector(state => state.Stock.Stock);
+  const loadData = useSelector(state => state.Stock.loadData)
+  const dispatch = useDispatch()
 
   useEffect(() => {
-    getStockList()
-  }, [loadStockData])
+    dispatch(getStockAsync())
+  }, [loadData])
 
-  const deleteStock = async (id) => {
-    const url = "http://localhost:3000/api/stock/" + id;
-    const options = {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-    };
-
-    fetch(url, options)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok ' + response.statusText);
-        }
-        return response.json();
-      })
-      .then(data => {
-        setLoadStockData((prev) => !prev);
-        console.log('Success:', data);
-      })
-      .catch((error) => {
-        console.log('Error:', error);
-      });
-  }
-
-  const editableValue = (id) => {
-    let editStock = stock.filter(stock => stock.id === id);
-    return editStock[0]
-  }
-
-  const editStock = async (id) => {
-    setEditId(id)
+  const handleeditProduct = (stock) => {
     setShowModal(true)
-
+    setEditStock(stock)
   }
+
   return (
     <section className="py-2 w-full text-purple-600">
       <div className="container mx-auto">
@@ -95,7 +68,7 @@ const StockTable = () => {
                 </thead>
                 <tbody>
                   {
-                    stock.map((items, index) => {
+                    stocks.map((items, index) => {
                       return (
                         <tr className='border-b border-purple-300' key={index}>
                           <td
@@ -132,13 +105,13 @@ const StockTable = () => {
                             className="border-r py-3 px-2 text-center text-base font-medium flex justify-center gap-2"
                           >
                             <button
-                              onClick={() => deleteStock(items.id)}
+                              onClick={() => dispatch(deleteStockAsync(items.id))}
                               className="inline-block py-2.5 px-4 rounded-md hover:bg-red-300 text-red-600 font-medium"
                             >
                               <Trash2Icon />
                             </button>
                             <button
-                              onClick={() => editStock(items.id)}
+                              onClick={() => handleeditProduct(items)}
                               className="inline-block py-2.5 px-4 rounded-md hover:bg-purple-300 font-medium"
                             >
                               <EditIcon />
@@ -154,7 +127,7 @@ const StockTable = () => {
           </div>
         </div>
       </div>
-      {showModal && <StockEditModal onClose={() => setShowModal(false)} edit_stock={editableValue(editId)} />}
+      {showModal && <StockEditModal onClose={() => setShowModal(false)} edit_stock={editStock} />}
     </section>
   )
 }

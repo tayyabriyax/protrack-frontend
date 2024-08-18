@@ -1,11 +1,16 @@
-import React, { useState, useContext, useEffect } from 'react'
-import { StockContext } from '../../contexts/StockContext';
-import { ProductContext } from '../../contexts/ProductContext';
+import React, { useState, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { getProductAsync } from '../../features/ProductSlice'
+import { addStockAsync } from '../../features/StockSlice'
 
 const StockModal = ({ onClose }) => {
-    const [stock, setStock] = useState({ product_id: "", purchase_price: "", sale_price: "", quantity: "", batch_no: "" });
-    const { setLoadStockData } = useContext(StockContext);
-    const { products, getProductList, loadProductData, setLoadProductData } = useContext(ProductContext)
+    const [stock, setStock] = useState({ product_id: "", purchase_price: "", sale_price: "", quantity: "", batch_no: "" })
+    const product = useSelector(state => state.Product.Product)
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        dispatch(getProductAsync())
+    }, [])
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -13,52 +18,23 @@ const StockModal = ({ onClose }) => {
             ...stock,
             [name]: value
         });
-    };
-
-    useEffect(() => {
-        getProductList()
-    }, [loadProductData])
-
-    const handleSelectClick = () => {
-        setLoadProductData((prev) => !prev);
     }
 
     const handleAddClick = () => {
-        const url = "http://localhost:3000/api/stock";
-        const options = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(stock)
-        };
+        dispatch(addStockAsync(stock));
+        onClose()
+    }
 
-        fetch(url, options)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok ' + response.statusText);
-                }
-                return response.json();
-            })
-            .then(data => {
-                setLoadStockData((prev) => !prev);
-                onClose();
-                console.log('Success:', data);
-            })
-            .catch((error) => {
-                console.log('Error:', error);
-            });
-    };
     return (
         <div className='fixed top-0 left-0 bg-opacity-30 backdrop-blur-sm w-full h-full flex justify-center items-center text-purple-600'>
             <div className='p-8 flex flex-col gap-8 bg-purple-100 items-center rounded-md w-fit border-2 border-purple-600'>
                 <div className=' grid grid-cols-2 gap-8'>
-                    <div onClick={handleSelectClick} >
+                    <div >
                         <select value={stock.product_id} onChange={handleChange} name='product_id'
                         className='p-2 w-72 bg-purple-50 rounded-md outline-purple-600 text-gray-400'>
                             <option value="">Product</option>
                             {
-                                products.map((product, index) => {
+                                product.map((product, index) => {
                                     return (
                                         <option value={product.id} key={index}>{product.name}</option>
                                     )
@@ -94,7 +70,6 @@ const StockModal = ({ onClose }) => {
                         onChange={handleChange}
                         placeholder='Batch Number'
                         className='p-2 w-72 bg-purple-50 rounded-md outline-purple-600' />
-                    {/* <Dropdown label={"Supplier"} /> */}
                 </div>
                 <div className='flex gap-2 w-full justify-end'>
                     <button className='hover:bg-red-300 hover:text-red-600 py-1 px-4 font-bold rounded-md 

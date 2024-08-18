@@ -6,7 +6,7 @@ import CategoryProvider from '../../contexts/CategoryContext'
 const Category = () => {
   const [showModal, setShowModal] = useState(false)
   return (
-    <CategoryProvider className='w-full bg-purple-100 p-4 rounded-md flex flex-col gap-10'>
+    <div>
       <div className='flex justify-between items-center'>
         <span className='font-bold text-xl'>Category</span>
         <button className='hover:bg-purple-300 hover:text-purple-600 p-2 font-bold w-40 rounded-md 
@@ -18,7 +18,7 @@ const Category = () => {
         <CategoryTable />
         {showModal && <CategoryModal onClose={() => setShowModal(false)} />}
       </div>
-    </CategoryProvider >
+    </div >
   )
 }
 

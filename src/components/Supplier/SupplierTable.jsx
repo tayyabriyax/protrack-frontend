@@ -1,52 +1,25 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Trash2Icon, EditIcon } from 'lucide-react'
-import { SupplierContext } from '../../contexts/SupplierContext';
+import { useDispatch, useSelector } from 'react-redux';
 import SupplierEditModal from './SupplierEditModal';
+import { deleteSupplierAsync, getSupplierAsync } from '../../features/SupplierSlice';
 
 const SupplierTable = () => {
     const [showModal, setShowModal] = useState(false)
-    const { getSupplierList, loadSupplierData, supplier, setLoadSupplierData } = useContext(SupplierContext);
-    const [editId, setEditId] = useState(null)
+    const [editSupplier, setEditSupplier] = useState(null)
+    const suppliers = useSelector(state => state.Supplier.Supplier);
+    const loadData = useSelector(state => state.Supplier.loadData);
+    const dispatch = useDispatch()
 
     useEffect(() => {
-        getSupplierList()
-    }, [loadSupplierData])
+        dispatch(getSupplierAsync())
+    }, [loadData])
 
-    const deleteSupplier = async (id) => {
-        const url = "http://localhost:3000/api/supplier/" + id;
-        const options = {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        };
-
-        fetch(url, options)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok ' + response.statusText);
-                }
-                return response.json();
-            })
-            .then(data => {
-                setLoadSupplierData((prev) => !prev);
-                console.log('Success:', data);
-            })
-            .catch((error) => {
-                console.log('Error:', error);
-            });
-    }
-
-    const editableValue = (id) => {
-        let editSupplier = supplier.filter(supplier => supplier.id === id);
-        return editSupplier[0]
-    }
-
-    const editSupplier = async (id) => {
-        setEditId(id)
+    const handleeditSupplier = (supplier) => {
         setShowModal(true)
-
+        setEditSupplier(supplier)
     }
+
     return (
         <section className="py-2 w-full">
             <div className="container mx-auto">
@@ -90,7 +63,7 @@ const SupplierTable = () => {
                                 </thead>
                                 <tbody>
                                     {
-                                        supplier.map((supplier, index) => {
+                                        suppliers.map((supplier, index) => {
                                             return (
                                                 <tr className='border-b border-purple-300' key={index}>
                                                     <td
@@ -122,13 +95,13 @@ const SupplierTable = () => {
                                                         className="border-r py-3 px-2 text-center text-base font-medium flex justify-center gap-2"
                                                     >
                                                         <button
-                                                            onClick={() => deleteSupplier(supplier.id)}
+                                                            onClick={() => dispatch(deleteSupplierAsync(supplier.id))}
                                                             className="inline-block py-2.5 px-4 rounded-md hover:bg-red-300 text-red-600 font-medium"
                                                         >
                                                             <Trash2Icon />
                                                         </button>
                                                         <button
-                                                            onClick={() => editSupplier(supplier.id)}
+                                                            onClick={() => handleeditSupplier(supplier)}
                                                             className="inline-block py-2.5 px-4 rounded-md hover:bg-purple-300 font-medium"
                                                         >
                                                             <EditIcon />
@@ -144,7 +117,7 @@ const SupplierTable = () => {
                     </div>
                 </div>
             </div>
-            {showModal && <SupplierEditModal onClose={() => setShowModal(false)} edit_supplier={editableValue(editId)} />}
+            {showModal && <SupplierEditModal onClose={() => setShowModal(false)} edit_supplier={editSupplier} />}
         </section>
     )
 }
