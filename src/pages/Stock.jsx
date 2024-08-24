@@ -6,7 +6,6 @@ import StockProvider from '../contexts/StockContext'
 const RunningTasks = () => {
   const [showModal, setShowModal] = useState(false)
   return (
-      <StockProvider>
         <div className='w-full bg-purple-50 p-4 rounded-md flex flex-col gap-10 text-purple-600'>
           <div className='flex justify-end items-center'>
             <button className='hover:bg-purple-300 hover:text-purple-600 p-2 font-bold w-40 rounded-md 
@@ -19,7 +18,6 @@ const RunningTasks = () => {
             {showModal && <StockModal onClose={() => setShowModal(false)} />}
           </div>
         </div>
-      </StockProvider>
   )
 }
 

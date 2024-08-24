@@ -43,14 +43,14 @@ const StockModal = ({ onClose }) => {
                         </select>
                     </div>
                     <input
-                        type="text"
+                        type="number"
                         value={stock.purchase_price}
                         name='purchase_price'
                         onChange={handleChange}
                         placeholder='Purchase Price'
                         className='p-2 w-72 bg-purple-50 rounded-md outline-purple-600' />
                     <input
-                        type="text"
+                        type="number"
                         value={stock.sale_price}
                         name='sale_price'
                         onChange={handleChange}

@@ -64,14 +64,14 @@ const StockEditModal = ({ onClose, edit_stock }) => {
                     </select>
                 </div>
                 <input
-                    type="text"
+                    type="number"
                     value={defaultPurPrice}
                     name='purchase_price'
                     onChange={handleChangePurPrice}
                     placeholder='Purchase Price'
                     className='p-2 w-72 bg-purple-50 rounded-md outline-purple-600' />
                 <input
-                    type="text"
+                    type="number"
                     value={defaultSalePrice}
                     name='sale_price'
                     onChange={handleChangeSalePrice}

@@ -9,7 +9,7 @@ const EnrichmentList = () => {
                         <div className='w-full bg-purple-50 p-4 rounded-md flex flex-col gap-10 text-purple-600'>
                             <div className='flex justify-end items-center'>
                                 <button className='hover:bg-purple-300 hover:text-purple-600 p-2 font-bold w-40 rounded-md 
-                border-purple-500 border-2' onClick={() => setShowModal(true)}>
+                                    border-purple-500 border-2' onClick={() => setShowModal(true)}>
                                     Add New
                                 </button>
                             </div>

@@ -5,6 +5,7 @@ import CompanySlice from "../features/CompanySlice";
 import SupplierSlice from "../features/SupplierSlice";
 import ProductSlice from "../features/ProductSlice";
 import StockSlice from "../features/StockSlice";
+import PointOfSaleSlice from "../features/PointOfSaleSlice";
 
 export const store = configureStore({
     reducer: {
@@ -13,6 +14,7 @@ export const store = configureStore({
         Company: CompanySlice,
         Supplier: SupplierSlice,
         Product: ProductSlice,
-        Stock: StockSlice
+        Stock: StockSlice,
+        PointOfSale: PointOfSaleSlice
     }
 })

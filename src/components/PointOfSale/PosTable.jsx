@@ -1,6 +1,17 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { deleteCartAsync, getCartAsync } from '../../features/PointOfSaleSlice';
+import { Trash2Icon } from 'lucide-react';
 
-const PosTable = ({ product }) => {
+const PosTable = () => {
+    const cart = useSelector(state => state.PointOfSale.Cart);
+    const loadData = useSelector(state => state.PointOfSale.loadData);
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        dispatch(getCartAsync())
+    }, [loadData])
+
     return (
         <section className="py-2 w-full">
             <div className="container mx-auto">
@@ -35,38 +46,53 @@ const PosTable = ({ product }) => {
                                         >
                                             Total
                                         </th>
+                                        <th
+                                            className="w-1/6 min-w-[160px] py-4 px-3 text-lg font-bold lg:py-7 lg:px-4"
+                                        >
+                                            Action
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {product.map((item, index) => {
-                                        return(
+                                    {cart.map((item, index) => {
+                                        return (
                                             <tr className='border-b border-purple-300' key={index}>
-                                        <td
-                                            className="py-5 border-s px-2 text-center text-base font-medium"
-                                        >
-                                            { index + 1 }
-                                        </td>
-                                        <td
-                                            className="py-5 px-2 text-center text-base font-medium"
-                                        >
-                                            { item.product_name }
-                                        </td>
-                                        <td
-                                            className="py-5 px-2 text-center text-base font-medium"
-                                        >
-                                            { item.product_qty }
-                                        </td>
-                                        <td
-                                            className="py-5 px-2 text-center text-base font-medium"
-                                        >
-                                            { item.product_price }
-                                        </td>
-                                        <td
-                                            className="py-5 px-2 text-center text-base font-medium"
-                                        >
-                                            { item.total }
-                                        </td>
-                                    </tr>
+                                                <td
+                                                    className="py-5 border-s px-2 text-center text-base font-medium"
+                                                >
+                                                    {index + 1}
+                                                </td>
+                                                <td
+                                                    className="py-5 px-2 text-center text-base font-medium"
+                                                >
+                                                    {item.product_name}
+                                                </td>
+                                                <td
+                                                    className="py-5 px-2 text-center text-base font-medium"
+                                                >
+                                                    {item.product_qty}
+                                                </td>
+                                                <td
+                                                    className="py-5 px-2 text-center text-base font-medium"
+                                                >
+                                                    {item.product_price}
+                                                </td>
+                                                <td
+                                                    className="py-5 px-2 text-center text-base font-medium"
+                                                >
+                                                    {item.product_total}
+                                                </td>
+                                                <td
+                                                    className="border-r py-3 px-2 text-center text-base font-medium flex justify-center gap-2"
+                                                >
+                                                    <button
+                                                        onClick={() => dispatch(deleteCartAsync(item.id))}
+                                                        className="inline-block py-2.5 px-4 rounded-md hover:bg-red-300 text-red-600 font-medium"
+                                                    >
+                                                        <Trash2Icon />
+                                                    </button>
+                                                </td>
+                                            </tr>
                                         )
                                     })}
                                 </tbody>
